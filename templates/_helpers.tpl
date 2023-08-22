@@ -263,10 +263,12 @@ storage might be desired by the user.
         name: data
         {{- include "vault.dataVolumeClaim.annotations" . | nindent 6 }}
       spec:
+      {{- if eq (.Values.server.dataStorage.restoreStatus | toString) "true" }}
         dataSource:
-            name: imported-data-v-pvc-snapshot
+            name: {{ .Values.server.dataStorage.snapshotName }}
             kind: VolumeSnapshot
             apiGroup: snapshot.storage.k8s.io
+      {{ end }}
         accessModes:
           - {{ .Values.server.dataStorage.accessMode | default "ReadWriteOnce" }}
         resources:
